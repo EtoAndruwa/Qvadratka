@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 
-//void PRINT_WELCOME(); // Печатает welcome
+void PRINT_WELCOME(); // Печатает welcome
 void PRINT_EQUATION(int a, int b, int c); //Печатает уравнение с коэффициентами A,B и C
 void INPUT_ABC(int* a, int* b, int* c); //Ввод A, B и С
 void PRINT_ABC(int a, int b, int c); //Печатает A, B и С
