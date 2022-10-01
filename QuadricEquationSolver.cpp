@@ -129,7 +129,7 @@ void LOGIC_CALC_ROOTS(int a, int b, int discr, double* x1, double* x2, double* x
 void PRINT_ROOTS_NEG(double* x_x1, double* y_x1, double* x_x2, double* y_x2) //Печатает корни при D<0
     {
         printf("x1 = %f+(%f)i\n", *x_x1, *y_x1);
-        printf("x2 = %f+(%f)i\n", *x_x1, *y_x1);
+        printf("x2 = %f+(%f)i\n", *x_x2, *y_x2);
     }
 
 void PRINT_ROOTS_0_OR_POS(double* x1, double* x2) //Печатает корни при D>=0
