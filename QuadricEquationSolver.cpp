@@ -1,7 +1,22 @@
 #include <stdio.h>
 #include <math.h>
 
-#define EPS 0.000001
+#define EPS 1e-7
+#define INF "INF"
+#define NO_ROOTS "NO_ROOTS"
+
+/*struct MY_TEST_STRUCT
+    {
+        double a;
+        double b;
+        double c;
+        double x1;
+        double x2;
+        double x_x1;
+        double y_x1;
+        double x_x2;
+        double y_x1;
+    };*/
 
 void PRINT_WELCOME(); // Печатает welcome
 void PRINT_EQUATION(double a, double b, double c); //Печатает уравнение с коэффициентами A,B и C
@@ -11,7 +26,7 @@ void CALC_DISCR(double a, double b, double c, double* discr); //Считает дискрими
 int CALC_NUM_OF_ROOTS(double Discr); //Возвращает кол-во корней по дискриминанту
 void CALC_ROOTS_0_OR_POS(double a, double b, double discr, double* x1, double* x2); //Cчитает корин при D>=0
 void CALC_ROOTS_NEG(double a, double b, double discr, double* x_x1, double* y_x1, double* x_x2, double* y_x2);  //Cчитает корни при D<0
-void LOGIC_CALC_ROOTS(double a, double b, double discr, double* x1, double* x2, double* x_x1, double* y_x1, double* x_x2, double* y_x2);  //Вызывает функцию calc_roots в зависимости от D
+int CASE_LOGIC(double a, double b, double c);  //Возвращает номер кейса
 void PRINT_ROOTS_0_OR_POS(double* x1, double* x2); //Печатает корни при D>=0
 void PRINT_ROOTS_NEG(double* x_x1, double* y_x1, double* x_x2, double* y_x2); //Печатает корни при D<0
 
@@ -30,16 +45,20 @@ int main ()
         double y_x1 = 0.0;
         double x_x2 = 0.0;
         double y_x2 = 0.0;
+        int Eq_case = 0;
 
         PRINT_WELCOME();
         printf("Enter a, b and c: ");
 
         INPUT_ABC(&A, &B, &C);
+
         PRINT_ABC(A, B, C);
         PRINT_EQUATION(A, B, C);
 
-        CALC_DISCR(A, B, C, &Discr);
-        LOGIC_CALC_ROOTS(A, B, Discr, &x1, &x2, &x_x1, &y_x1, &x_x2, &y_x2);
+        //MY_TEST_FUNCTION();
+
+        Eq_case = CASE_LOGIC(A, B, C);
+        printf("Case number: %d", Eq_case);
 
         Num_of_roots = CALC_NUM_OF_ROOTS(Discr);
         printf("Number of roots: %d\n", Num_of_roots);
@@ -114,17 +133,37 @@ void CALC_ROOTS_NEG(double a, double b, double discr, double* x_x1, double* y_x1
         *y_x2 = (sqrt(fabs(discr))) / (2 * a);
     }
 
-void LOGIC_CALC_ROOTS(double a, double b, double discr, double* x1, double* x2, double* x_x1, double* y_x1, double* x_x2, double* y_x2)  //Вызывает функцию calc_roots в зависимости от D
+int CASE_LOGIC(double a, double b, double c)  //Возвращает номер кейса
     {
-        if(discr >= 0)
+        if((a < EPS) && (b < EPS) && (c < EPS))
             {
-                CALC_ROOTS_0_OR_POS(a, b, discr, x1, x2);
-                PRINT_ROOTS_0_OR_POS(x1, x2);
+                printf("ERROR: -1\n");
+                return 1;
             }
-        else
+        if((fabs(a - 0.0) <= EPS) && (fabs(b - 0.0) <= EPS) && (fabs(c - 0.0) <= EPS))
             {
-                CALC_ROOTS_NEG(a, b, discr, x_x1, y_x1, x_x2, y_x2);
-                PRINT_ROOTS_NEG(x_x1, y_x1, x_x2, y_x2);
+                printf("ALL ZERO\n");
+                return 2;
+            }
+        if((fabs(a - 0.0) <= EPS) && (fabs(b - 0.0) > EPS) && (fabs(c - 0.0) > EPS))
+            {
+                printf("LINEAR\n");
+                return 3;
+            }
+        if((fabs(a - 0.0) <= EPS) && (fabs(b - 0.0) <= EPS) && (fabs(c - 0.0) > EPS))
+            {
+                printf("NO ROOTS\n");
+                return 4;
+            }
+        if((fabs(a - 0.0) > EPS) && (fabs(b - 0.0) > EPS) && (fabs(c - 0.0) > EPS))
+            {
+                printf("DISCR\n");
+                return 5;
+            }
+        if((fabs(a - 0.0) > EPS) && (fabs(b - 0.0) > EPS) && (fabs(c - 0.0) <= EPS))
+            {
+                printf("AX^2+Bx\n");
+                return 6;
             }
     }
 
@@ -147,22 +186,9 @@ void SOLVE_LINEAR(double c, double b, double* x1)   //linear    eq
 
 void PRINT_LINEAR(double x1)   //prints linear root
     {
-        printf("%lf", x1);
+        printf("x1 = %lf", x1);
     }
 
-/*double SOLVE_ABC_ZERO()
-    {
-
-    }
-    */
-
-/*int CASE_ABC(double a, double b, double c)
-    {
-        switch (a)
-            {
-                case a
-            }
-    }*/
 
 
 
