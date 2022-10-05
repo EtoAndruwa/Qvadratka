@@ -23,14 +23,16 @@ void PRINT_EQUATION(double a, double b, double c); //Печатает уравнение с коэффи
 void INPUT_ABC(double* a, double* b, double* c); //Ввод A, B и С
 void PRINT_ABC(double a, double b, double c); //Печатает A, B и С
 void CALC_DISCR(double a, double b, double c, double* discr); //Считает дискриминант
-int CALC_NUM_OF_ROOTS(double Discr); //Возвращает кол-во корней по дискриминанту
+void CALC_NUM_OF_ROOTS(double Discr, int* num_of_roots); //Возвращает кол-во корней по дискриминанту
 void CALC_ROOTS_0_OR_POS(double a, double b, double discr, double* x1, double* x2); //Cчитает корин при D>=0
 void CALC_ROOTS_NEG(double a, double b, double discr, double* x_x1, double* y_x1, double* x_x2, double* y_x2);  //Cчитает корни при D<0
 int CASE_LOGIC(double a, double b, double c);  //Возвращает номер кейса
 void PRINT_ROOTS_0_OR_POS(double* x1, double* x2); //Печатает корни при D>=0
 void PRINT_ROOTS_NEG(double* x_x1, double* y_x1, double* x_x2, double* y_x2); //Печатает корни при D<0
-
-
+void EQUATION_SOLVER_LOGIC(int case_num, double a, double b, double c, double* discr, double* x1, double* x2, double* x_x1, double* y_x1, double* x_x2, double* y_x2, int* Num_of_roots); //Отвечает за логику, по кейсам вызывает другие функции для решения уравнения
+void PRINT_LINEAR(double x1); //Выводит один корень линейного уравнения
+void SOLVE_LINEAR(double c, double b, double* x1); //Решает линейное уравнение
+void DISCR_LOGIC(double a, double b, double c, double* discr, double* x1, double* x2, double* x_x1, double* y_x1, double* x_x2, double* y_x2); //Вызывает функции решения уравнения взависимости от значение дискриминанта квадр. уравнения
 
 int main ()
     {
@@ -58,12 +60,8 @@ int main ()
         //MY_TEST_FUNCTION();
 
         Eq_case = CASE_LOGIC(A, B, C);
-        printf("Case number: %d", Eq_case);
-
-        Num_of_roots = CALC_NUM_OF_ROOTS(Discr);
-        printf("Number of roots: %d\n", Num_of_roots);
-
-
+        //printf("Case number: %d\n", Eq_case);
+        EQUATION_SOLVER_LOGIC(Eq_case, A, B, C, &Discr, &x1, &x2, &x_x1, &y_x1, &x_x2, &y_x2, &Num_of_roots);
 
         return 0;
     }
@@ -98,30 +96,52 @@ void PRINT_ABC(double a, double b, double c) //Печатает A, B и С
 
 void CALC_DISCR(double a, double b, double c, double* discr) //Считает дискриминант
     {
-        *discr = (b * b) - (4 * a * c);
-        printf("DISCR: %.2lf\n", *discr);
-    }
-
-int CALC_NUM_OF_ROOTS(double Discr) //Возвращает кол-во корней по дискриминанту    !!!!!!СРАВНИВАЮ ДАБЛ И INT
-    {
-        if(fabs(Discr - 0.0) < EPS)
+        if(fabs(c) <= EPS)
             {
-                //printf("EPS :%.11lf\n", EPS);
-                //printf("If :%.11lf\n", fabs(Discr - 0));
-                return 1;
+                *discr = (b * b);
             }
         else
             {
-                //printf("EPS :%.11lf\n", EPS);
-                //printf("Else if: %.11lf\n", fabs(Discr - 0));
-                return 2;
+                *discr = (b * b) - (4 * a * c);
+            }
+        //printf("DISCR: %.3lf\n", *discr);
+    }
+
+void DISCR_LOGIC(double a, double b, double c, double* discr, double* x1, double* x2, double* x_x1, double* y_x1, double* x_x2, double* y_x2)
+    {
+        if((fabs(*discr) <= EPS) && (fabs(b) <= EPS) && (fabs(c) <= EPS) && (fabs(a) > EPS))
+            {
+                *x1 = 0;
+                printf("Root: %.3lf", *x1);
+            }
+        if(((fabs(*discr) <= EPS) && (fabs(b) > EPS) && (fabs(c) > EPS) && (fabs(a) > EPS)) || ((*discr) > EPS))
+            {
+                CALC_ROOTS_0_OR_POS(a, b, *discr, x1, x2);
+                PRINT_ROOTS_0_OR_POS(x1, x2);
+            }
+        if((*discr) < -EPS)
+            {
+                CALC_ROOTS_NEG(a, b, *discr, x_x1, y_x1, x_x2, y_x2);
+                PRINT_ROOTS_NEG(x_x1, y_x1, x_x2, y_x2);
+            }
+    }
+
+void CALC_NUM_OF_ROOTS(double Discr, int* num_of_roots) //Вычисляет кол-во корней по дискриминанту
+    {
+        if(fabs(Discr - 0.0) <= EPS)
+            {
+                *num_of_roots = 1;
+            }
+        else
+            {
+                *num_of_roots = 2;
             }
     }
 
 void CALC_ROOTS_0_OR_POS(double a, double b, double discr, double* x1, double* x2)  //Cчитает корин при D>=0
     {
-        *x1 = ((-b) - sqrt(discr)) / (2 * a);
-        *x2 = ((-b) + sqrt(discr)) / (2 * a);
+        *x1 = (-(b) - sqrt(discr)) / (2.0 * a);
+        *x2 = (-(b) + sqrt(discr)) / (2.0 * a);
     }
 
 void CALC_ROOTS_NEG(double a, double b, double discr, double* x_x1, double* y_x1, double* x_x2, double* y_x2)  //Cчитает корни при D<0
@@ -137,32 +157,26 @@ int CASE_LOGIC(double a, double b, double c)  //Возвращает номер кейса
     {
         if((a < EPS) && (b < EPS) && (c < EPS))
             {
-                printf("ERROR: -1\n");
                 return 1;
             }
         if((fabs(a - 0.0) <= EPS) && (fabs(b - 0.0) <= EPS) && (fabs(c - 0.0) <= EPS))
             {
-                printf("ALL ZERO\n");
                 return 2;
             }
         if((fabs(a - 0.0) <= EPS) && (fabs(b - 0.0) > EPS) && (fabs(c - 0.0) > EPS))
             {
-                printf("LINEAR\n");
                 return 3;
             }
         if((fabs(a - 0.0) <= EPS) && (fabs(b - 0.0) <= EPS) && (fabs(c - 0.0) > EPS))
             {
-                printf("NO ROOTS\n");
                 return 4;
             }
-        if((fabs(a - 0.0) > EPS) && (fabs(b - 0.0) > EPS) && (fabs(c - 0.0) > EPS))
+        if(((fabs(a - 0.0) > EPS) && (fabs(b - 0.0) > EPS) && (fabs(c - 0.0) > EPS)) || ((fabs(a - 0.0) > EPS) && (fabs(b - 0.0) <= EPS) && (fabs(c - 0.0) <= EPS)))
             {
-                printf("DISCR\n");
                 return 5;
             }
         if((fabs(a - 0.0) > EPS) && (fabs(b - 0.0) > EPS) && (fabs(c - 0.0) <= EPS))
             {
-                printf("AX^2+Bx\n");
                 return 6;
             }
     }
@@ -175,13 +189,13 @@ void PRINT_ROOTS_NEG(double* x_x1, double* y_x1, double* x_x2, double* y_x2) //П
 
 void PRINT_ROOTS_0_OR_POS(double* x1, double* x2) //Печатает корни при D>=0
     {
-        printf("x1 = %.2lf\n", *x1);
-        printf("x2 = %.2lf\n", *x2);
+        printf("x1 = %.3lf\n", *x1);
+        printf("x2 = %.3lf\n", *x2);
     }
 
-void SOLVE_LINEAR(double c, double b, double* x1)   //linear    eq
+void SOLVE_LINEAR(double c, double b, double* x1)   //linear eq
     {
-      *x1 = -(c)-(b);
+        *x1 = -(c) / (b);
     }
 
 void PRINT_LINEAR(double x1)   //prints linear root
@@ -189,6 +203,45 @@ void PRINT_LINEAR(double x1)   //prints linear root
         printf("x1 = %lf", x1);
     }
 
+void EQUATION_SOLVER_LOGIC(int case_num, double a, double b, double c, double* discr, double* x1, double* x2, double* x_x1, double* y_x1, double* x_x2, double* y_x2, int* Num_of_roots)//Отвечает за логику, вызывает другие функции для решения уравнения
+    {
+        switch (case_num)
+            {
+                case 1:
+                    printf("ERROR: -1\n");
+                    break;
+                case 2:
+                    printf("Number of roots: %s\n", INF);
+                    break;
+                case 3:
+                    //printf("LINEAR\n");
+                    SOLVE_LINEAR(c, b, x1);
+                    PRINT_LINEAR(*x1);
+                    break;
+                case 4:
+                    printf("%s\n", NO_ROOTS);
+                    break;
+                case 5:
+                    //printf("DISCR\n");
+                    CALC_DISCR(a, b, c, discr);
+                    CALC_NUM_OF_ROOTS(*discr, Num_of_roots);
+                    printf("Number of roots: %d\n", *Num_of_roots);
+                    DISCR_LOGIC(a, b, c, discr, x1, x2, x_x1, y_x1, x_x2, y_x2);
+                    break;
+                case 6:
+                    //printf("AX^2+Bx\n");
+                    CALC_DISCR(a, b, c, discr);
+                    CALC_NUM_OF_ROOTS(*discr, Num_of_roots);
+                    printf("Number of roots: %d\n", *Num_of_roots);
+                    CALC_ROOTS_0_OR_POS(a, b, *discr, x1, x2);
+                    PRINT_ROOTS_0_OR_POS(x1, x2);
+                    break;
+
+                default:
+                    printf("ERROR: no case matched");
+                    break;
+            }
+    }
 
 
 
