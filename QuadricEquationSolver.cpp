@@ -1,29 +1,29 @@
 #include <stdio.h>
 #include <math.h>
 
+#define EPS 0.000001
+
 void PRINT_WELCOME(); // Печатает welcome
-void PRINT_EQUATION(int a, int b, int c); //Печатает уравнение с коэффициентами A,B и C
-void INPUT_ABC(int* a, int* b, int* c); //Ввод A, B и С
-void PRINT_ABC(int a, int b, int c); //Печатает A, B и С
-void CALC_DISCR(int a, int b, int c, int* discr); //Считает дискриминант
-int CALC_NUM_OF_ROOTS(int Discr); //Возвращает кол-во корней по дискриминанту
-void CALC_ROOTS_0_OR_POS(int a, int b, int discr, double* x1, double* x2); //Cчитает корин при D>=0
-void CALC_ROOTS_NEG(int a, int b, int discr, double* x_x1, double* y_x1, double* x_x2, double* y_x2);  //Cчитает корни при D<0
-void LOGIC_CALC_ROOTS(int a, int b, int discr, double* x1, double* x2, double* x_x1, double* y_x1, double* x_x2, double* y_x2);  //Вызывает функцию calc_roots в зависимости от D
+void PRINT_EQUATION(double a, double b, double c); //Печатает уравнение с коэффициентами A,B и C
+void INPUT_ABC(double* a, double* b, double* c); //Ввод A, B и С
+void PRINT_ABC(double a, double b, double c); //Печатает A, B и С
+void CALC_DISCR(double a, double b, double c, double* discr); //Считает дискриминант
+int CALC_NUM_OF_ROOTS(double Discr); //Возвращает кол-во корней по дискриминанту
+void CALC_ROOTS_0_OR_POS(double a, double b, double discr, double* x1, double* x2); //Cчитает корин при D>=0
+void CALC_ROOTS_NEG(double a, double b, double discr, double* x_x1, double* y_x1, double* x_x2, double* y_x2);  //Cчитает корни при D<0
+void LOGIC_CALC_ROOTS(double a, double b, double discr, double* x1, double* x2, double* x_x1, double* y_x1, double* x_x2, double* y_x2);  //Вызывает функцию calc_roots в зависимости от D
 void PRINT_ROOTS_0_OR_POS(double* x1, double* x2); //Печатает корни при D>=0
 void PRINT_ROOTS_NEG(double* x_x1, double* y_x1, double* x_x2, double* y_x2); //Печатает корни при D<0
 
-
-#define EPS 0.000001
 
 
 int main ()
     {
         int Num_of_roots = 0;
-        int A = 0;
-        int B = 0;
-        int C = 0;
-        int Discr = 0;
+        double A = 0;
+        double B = 0;
+        double C = 0;
+        double Discr = 0;
         double x1 = 0.0;
         double x2 = 0.0;
         double x_x1 = 0.0;
@@ -44,6 +44,8 @@ int main ()
         Num_of_roots = CALC_NUM_OF_ROOTS(Discr);
         printf("Number of roots: %d\n", Num_of_roots);
 
+
+
         return 0;
     }
 
@@ -56,63 +58,63 @@ void PRINT_WELCOME() // Печатает welcome
         printf("##########################\n\n");
     }
 
-void PRINT_EQUATION(int a, int b, int c) //Печатает уравнение с коэффициентами A,B и C
+void PRINT_EQUATION(double a, double b, double c) //Печатает уравнение с коэффициентами A,B и C
     {
-        printf("Your equation is: (%d)*x^2+(%d)*x+(%d)=0\n\n", a, b, c);
+        printf("Your equation is: (%.2lf)*x^2+(%.2lf)*x+(%.2lf)=0\n\n", a, b, c);
     }
 
-void INPUT_ABC(int* a, int* b, int* c) //Ввод A, B и С
+void INPUT_ABC(double* a, double* b, double* c) //Ввод A, B и С
     {
-        scanf("%d", a);
-        scanf("%d", b);
-        scanf("%d", c);
+        scanf("%lf", a);
+        scanf("%lf", b);
+        scanf("%lf", c);
     }
 
-void PRINT_ABC(int a, int b, int c) //Печатает A, B и С
+void PRINT_ABC(double a, double b, double c) //Печатает A, B и С
     {
-        printf("A:%d\n", a);
-        printf("B:%d\n", b);
-        printf("C:%d\n\n", c);
+        printf("A:%.2lf\n", a);
+        printf("B:%.2lf\n", b);
+        printf("C:%.2lf\n\n", c);
     }
 
-void CALC_DISCR(int a, int b, int c, int* discr) //Считает дискриминант
+void CALC_DISCR(double a, double b, double c, double* discr) //Считает дискриминант
     {
         *discr = (b * b) - (4 * a * c);
-        printf("DISCR: %d\n", *discr);
+        printf("DISCR: %.2lf\n", *discr);
     }
 
-int CALC_NUM_OF_ROOTS(int Discr) //Возвращает кол-во корней по дискриминанту
+int CALC_NUM_OF_ROOTS(double Discr) //Возвращает кол-во корней по дискриминанту    !!!!!!СРАВНИВАЮ ДАБЛ И INT
     {
-        if(Discr == 0)
+        if(fabs(Discr - 0.0) < EPS)
             {
+                //printf("EPS :%.11lf\n", EPS);
+                //printf("If :%.11lf\n", fabs(Discr - 0));
                 return 1;
-            }
-        else if(Discr > 0)
-            {
-                return 2;
             }
         else
             {
+                //printf("EPS :%.11lf\n", EPS);
+                //printf("Else if: %.11lf\n", fabs(Discr - 0));
                 return 2;
             }
     }
 
-void CALC_ROOTS_0_OR_POS(int a, int b, int discr, double* x1, double* x2)  //Cчитает корин при D>=0
+void CALC_ROOTS_0_OR_POS(double a, double b, double discr, double* x1, double* x2)  //Cчитает корин при D>=0
     {
-        *x1 = (float(-b) - sqrt(discr)) / (2 * a);
-        *x2 = (float(-b) + sqrt(discr)) / (2 * a);
+        *x1 = ((-b) - sqrt(discr)) / (2 * a);
+        *x2 = ((-b) + sqrt(discr)) / (2 * a);
     }
 
-void CALC_ROOTS_NEG(int a, int b, int discr, double* x_x1, double* y_x1, double* x_x2, double* y_x2)  //Cчитает корни при D<0
+void CALC_ROOTS_NEG(double a, double b, double discr, double* x_x1, double* y_x1, double* x_x2, double* y_x2)  //Cчитает корни при D<0
     {
-        *x_x1 = float(-b) / (2 * a);
+        *x_x1 = (-b) / (2 * a);
         *y_x1 = - (sqrt(fabs(discr))) / (2 * a);
 
-        *x_x2 = float(-b) / (2 * a);
+        *x_x2 = (-b) / (2 * a);
         *y_x2 = (sqrt(fabs(discr))) / (2 * a);
     }
 
-void LOGIC_CALC_ROOTS(int a, int b, int discr, double* x1, double* x2, double* x_x1, double* y_x1, double* x_x2, double* y_x2)  //Вызывает функцию calc_roots в зависимости от D
+void LOGIC_CALC_ROOTS(double a, double b, double discr, double* x1, double* x2, double* x_x1, double* y_x1, double* x_x2, double* y_x2)  //Вызывает функцию calc_roots в зависимости от D
     {
         if(discr >= 0)
             {
@@ -128,15 +130,47 @@ void LOGIC_CALC_ROOTS(int a, int b, int discr, double* x1, double* x2, double* x
 
 void PRINT_ROOTS_NEG(double* x_x1, double* y_x1, double* x_x2, double* y_x2) //Печатает корни при D<0
     {
-        printf("x1 = %f+(%f)i\n", *x_x1, *y_x1);
-        printf("x2 = %f+(%f)i\n", *x_x2, *y_x2);
+        printf("x1 = %.2lf+(%.2lf)i\n", *x_x1, *y_x1);
+        printf("x2 = %.2lf+(%.2lf)i\n", *x_x2, *y_x2);
     }
 
 void PRINT_ROOTS_0_OR_POS(double* x1, double* x2) //Печатает корни при D>=0
     {
-        printf("x1 = %f\n", *x1);
-        printf("x2 = %f\n", *x2);
+        printf("x1 = %.2lf\n", *x1);
+        printf("x2 = %.2lf\n", *x2);
     }
+
+void SOLVE_LINEAR(double c, double b, double* x1)   //linear    eq
+    {
+      *x1 = -(c)-(b);
+    }
+
+void PRINT_LINEAR(double x1)   //prints linear root
+    {
+        printf("%lf", x1);
+    }
+
+/*double SOLVE_ABC_ZERO()
+    {
+
+    }
+    */
+
+/*int CASE_ABC(double a, double b, double c)
+    {
+        switch (a)
+            {
+                case a
+            }
+    }*/
+
+
+
+
+
+
+
+
 
 
 
