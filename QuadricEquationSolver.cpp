@@ -20,7 +20,7 @@
 
 void PRINT_WELCOME(); // Печатает welcome
 void PRINT_EQUATION(double a, double b, double c); //Печатает уравнение с коэффициентами A,B и C
-void INPUT_ABC(double* a, double* b, double* c); //Ввод A, B и С
+int INPUT_ABC(double* a, double* b, double* c); //Ввод A, B и С
 void PRINT_ABC(double a, double b, double c); //Печатает A, B и С
 void CALC_DISCR(double a, double b, double c, double* discr); //Считает дискриминант
 void CALC_NUM_OF_ROOTS(double Discr, int* num_of_roots); //Возвращает кол-во корней по дискриминанту
@@ -80,11 +80,23 @@ void PRINT_EQUATION(double a, double b, double c) //Печатает уравнение с коэффиц
         printf("Your equation is: (%.2lf)*x^2+(%.2lf)*x+(%.2lf)=0\n\n", a, b, c);
     }
 
-void INPUT_ABC(double* a, double* b, double* c) //Ввод A, B и С
+int INPUT_ABC(double* a, double* b, double* c) //Ввод A, B и С
     {
-        scanf("%lf", a);
-        scanf("%lf", b);
-        scanf("%lf", c);
+        if(scanf("%lf", a) != 1)
+            {
+                printf("ERROR: invalid value for A. Sorry, enter number, please!\n");
+                return 0;
+            }
+        if(scanf("%lf", b) != 1)
+            {
+                printf("ERROR: invalid value for B. Sorry, enter number, please!\n");
+                return 0;
+            }
+        if(scanf("%lf", c) != 1)
+            {
+                printf("ERROR: invalid value for C. Sorry, enter number, please!\n");
+                return 0;
+            }
     }
 
 void PRINT_ABC(double a, double b, double c) //Печатает A, B и С
